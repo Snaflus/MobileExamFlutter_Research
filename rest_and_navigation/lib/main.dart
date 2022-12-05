@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rest_and_navigation/Book.dart';
 import 'package:rest_and_navigation/httpFunctions.dart';
+import 'package:rest_and_navigation/route_two.dart';
 
 void main() {
   runApp(const MyApp());
@@ -75,6 +76,12 @@ class _MyHomePageState extends State<MyHomePage> {
                 }
                 return const CircularProgressIndicator();
               },
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(context,MaterialPageRoute(builder: (context) => const RouteTwo(title: "Flutter Demo Get All Books")));
+              },
+              child: const Text('See all books'),
             ),
           ],
         ),
