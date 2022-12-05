@@ -37,8 +37,10 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    futureBook = fetchBook(1);
+    futureBook = fetchBook(0);
   }
+
+  final textController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -50,6 +52,19 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            TextField(
+              decoration: InputDecoration(hintText: 'input book id here'),
+              controller: textController,
+            ),
+            ElevatedButton(
+              onPressed: () {
+                var value = int.parse(textController.text);
+                setState(() {
+                  futureBook = fetchBook(value);
+                });
+              },
+              child: const Text('Submit'),
+            ),
             FutureBuilder<Book>(
               future: futureBook,
               builder: (context, snapshot) {
@@ -61,7 +76,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 return const CircularProgressIndicator();
               },
             ),
-            
           ],
         ),
       ),
