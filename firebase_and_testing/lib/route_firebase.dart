@@ -53,11 +53,14 @@ class _RouteFirebaseState extends State<RouteFirebase> {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 32),
                 child: SizedBox(
-                  width: 100,
-                  height: 36,
+                  width: 200,
+                  height: 42,
                   child: ElevatedButton(
                     onPressed: () {},
-                    child: const Text('Login'),
+                    child: const Text(
+                      'Login',
+                      style: TextStyle(fontSize: 18),
+                    ),
                   ),
                 ),
               ),
@@ -65,7 +68,7 @@ class _RouteFirebaseState extends State<RouteFirebase> {
                 child: Align(
                   alignment: FractionalOffset.bottomCenter,
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    padding: const EdgeInsets.symmetric(vertical: 32),
                     child: GestureDetector(
                       onTap: () {
                         //TODO: IMPLEMENT REGISTER
