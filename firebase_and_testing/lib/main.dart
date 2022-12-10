@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:firebase_and_testing/route_firebase.dart';
 
 void main() {
   runApp(const ProviderScope(child: MyApp()));
@@ -47,7 +48,7 @@ class ProgressBar extends ConsumerWidget {
 
     return Column(
       children: [
-        Text('\nButton clicks out of $maxCount'),
+        Text('Button clicks out of $maxCount'),
         LinearProgressIndicator(value: count! / maxCount),
       ],
     );
@@ -94,7 +95,24 @@ class _MyHomePageState extends State<MyHomePage> {
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[CounterDisplay(), ProgressBar()],
+            children: <Widget>[
+              CounterDisplay(),
+              // TODO: WRAP IN LOAD CONDITION FOR LOGGED IN FIREBASE USERS
+              Text("\n"),
+              ProgressBar(),
+              Text("\n"),
+              // TODO: ENDS
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const RouteFirebase(
+                              title: "Flutter Demo Firebase")));
+                },
+                child: const Text('Firebase Login Route'),
+              ),
+            ],
           ),
         ),
         floatingActionButton: CounterButton());
