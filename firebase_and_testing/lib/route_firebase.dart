@@ -19,6 +19,68 @@ class _RouteFirebaseState extends State<RouteFirebase> {
 
   @override
   Widget build(BuildContext context) {
+    var usernameAndPasswordTextFormBigScreen = Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+          child: SizedBox(
+            width: 200,
+            height: 60,
+            child: TextFormField(
+              controller: usernameController,
+              decoration: const InputDecoration(
+                border: UnderlineInputBorder(),
+                labelText: 'Username',
+              ),
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+          child: SizedBox(
+            width: 200,
+            height: 60,
+            child: TextFormField(
+              controller: passwordController,
+              obscureText: true,
+              decoration: const InputDecoration(
+                border: UnderlineInputBorder(),
+                labelText: 'Password',
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+
+    var usernameAndPasswordTextFormSmallScreen = Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+          child: TextFormField(
+            controller: usernameController,
+            decoration: const InputDecoration(
+              border: UnderlineInputBorder(),
+              labelText: 'Username',
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+          child: TextFormField(
+            controller: passwordController,
+            obscureText: true,
+            decoration: const InputDecoration(
+              border: UnderlineInputBorder(),
+              labelText: 'Password',
+            ),
+          ),
+        ),
+      ],
+    );
+
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -29,29 +91,15 @@ class _RouteFirebaseState extends State<RouteFirebase> {
               top: 128 + 64, left: 8, right: 8, bottom: 8),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                child: TextFormField(
-                  controller: usernameController,
-                  decoration: const InputDecoration(
-                    border: UnderlineInputBorder(),
-                    labelText: 'Username',
-                  ),
-                ),
-              ),
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                child: TextFormField(
-                  controller: passwordController,
-                  obscureText: true,
-                  decoration: const InputDecoration(
-                    border: UnderlineInputBorder(),
-                    labelText: 'Password',
-                  ),
-                ),
+            children: [
+              Expanded(
+                child: LayoutBuilder(builder: (context, constraints) {
+                  if (constraints.maxWidth > 700) {
+                    return usernameAndPasswordTextFormBigScreen;
+                  } else {
+                    return usernameAndPasswordTextFormSmallScreen;
+                  }
+                }),
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 32),
@@ -61,10 +109,10 @@ class _RouteFirebaseState extends State<RouteFirebase> {
                   child: ElevatedButton(
                     onPressed: () async {
                       try {
-                        final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
-                            email: usernameController.text,
-                            password: passwordController.text
-                        );
+                        final credential = await FirebaseAuth.instance
+                            .signInWithEmailAndPassword(
+                                email: usernameController.text,
+                                password: passwordController.text);
                       } on FirebaseAuthException catch (e) {
                         if (e.code == 'user-not-found') {
                           print('No user found for that email.');
@@ -73,7 +121,8 @@ class _RouteFirebaseState extends State<RouteFirebase> {
                         }
                       }
                       FirebaseAuth.instance.currentUser?.reload();
-                      if (FirebaseAuth.instance.currentUser?.email.toString() == usernameController.text) {
+                      if (FirebaseAuth.instance.currentUser?.email.toString() ==
+                          usernameController.text) {
                         Navigator.pop(context);
                       }
                     },
