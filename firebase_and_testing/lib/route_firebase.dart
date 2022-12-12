@@ -1,5 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
 class RouteFirebase extends StatefulWidget {
   const RouteFirebase({super.key, required this.title});
@@ -56,7 +59,24 @@ class _RouteFirebaseState extends State<RouteFirebase> {
                   width: 200,
                   height: 42,
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () async {
+                      try {
+                        final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+                            email: usernameController.text,
+                            password: passwordController.text
+                        );
+                      } on FirebaseAuthException catch (e) {
+                        if (e.code == 'user-not-found') {
+                          print('No user found for that email.');
+                        } else if (e.code == 'wrong-password') {
+                          print('Wrong password provided for that user.');
+                        }
+                      }
+                      FirebaseAuth.instance.currentUser?.reload();
+                      if (FirebaseAuth.instance.currentUser?.email.toString() == usernameController.text) {
+                        Navigator.pop(context);
+                      }
+                    },
                     child: const Text(
                       'Login',
                       style: TextStyle(fontSize: 18),

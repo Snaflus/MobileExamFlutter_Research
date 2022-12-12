@@ -1,19 +1,19 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+
 import 'package:firebase_and_testing/route_firebase.dart';
+import 'package:firebase_and_testing/consumer_widgets.dart';
+import 'package:firebase_and_testing/providers.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const ProviderScope(child: MyApp()));
-}
-
-final counterProvider = StateNotifierProvider((ref) {
-  return Counter();
-});
-
-class Counter extends StateNotifier<int> {
-  Counter() : super(0);
-
-  void increment() => state++;
 }
 
 class MyApp extends StatelessWidget {
@@ -40,51 +40,6 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class ProgressBar extends ConsumerWidget {
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    var count = int.tryParse(ref.watch(counterProvider).toString());
-    var maxCount = 10;
-
-    return Column(
-      children: [
-        Text('Button clicks out of $maxCount'),
-        LinearProgressIndicator(value: count! / maxCount),
-      ],
-    );
-  }
-}
-
-class CounterDisplay extends ConsumerWidget {
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    var count = ref.watch(counterProvider).toString();
-
-    return Column(
-      children: [
-        const Text(
-          'You have pushed the button this many times:',
-        ),
-        Text(
-          count,
-          style: Theme.of(context).textTheme.headline4,
-        ),
-      ],
-    );
-  }
-}
-
-class CounterButton extends ConsumerWidget {
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return FloatingActionButton(
-      onPressed: ref.read(counterProvider.notifier).increment,
-      tooltip: 'Increment',
-      child: const Icon(Icons.add),
-    );
-  }
-}
-
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
@@ -97,13 +52,11 @@ class _MyHomePageState extends State<MyHomePage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               CounterDisplay(),
-              // TODO: WRAP IN LOAD CONDITION FOR LOGGED IN FIREBASE USERS
-              Text("\n"),
-              ProgressBar(),
-              Text("\n"),
-              // TODO: ENDS
+              ExclusiveFeatureForFirebaseUsers(),
               ElevatedButton(
                 onPressed: () {
+                  FirebaseAuth.instance.signOut();
+                  FirebaseAuth.instance.currentUser?.reload();
                   Navigator.push(
                       context,
                       MaterialPageRoute(
