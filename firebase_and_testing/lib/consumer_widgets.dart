@@ -55,7 +55,8 @@ class ExclusiveFeatureForFirebaseUsers extends ConsumerWidget {
   const ExclusiveFeatureForFirebaseUsers({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    var firebase = ref.watch(firebaseAuthProvider);
+    ref.watch(authStateChangesProvider); //updates widget when stream changes
+    var firebase = ref.read(firebaseAuthProvider); //gives access to the stream inside of widget
     return Column(
       children: [
         if (firebase.currentUser != null) ...[
